@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 
 export default function TokenSettlement() {
-  const [activeTab, setActiveTab] = useState('kyc'); // Tabs: kyc, payment
+  const [activeTab, setActiveTab] = useState('dataroom'); // Tabs: dataroom, kyc, payment
   const [status, setStatus] = useState('AWAITING_PAYMENT'); 
   const [txHash, setTxHash] = useState('');
   
@@ -20,23 +20,17 @@ export default function TokenSettlement() {
   const ticketPrice = 50;
   const tokens = 10;
 
-  // Manejo de cambios en el formulario
   const handleInputChange = (e: any) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value
-    });
+    setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
   };
 
   const handleKycSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.declaration && formData.walletAddress) {
-      setKycSubmitted(true);
-    }
+    if (formData.declaration && formData.walletAddress) setKycSubmitted(true);
   };
 
-  // Funciones del simulador de Webhook
+  // Funciones del simulador
   const simularPagoDetectado = () => {
     setStatus('DETECTED');
     setTxHash('0x3ba76c8db7417e13295963b516823c914bf4087b3a1d2938fd8a99479e0018ac');
@@ -47,97 +41,168 @@ export default function TokenSettlement() {
   return (
     <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center p-4 md:p-6 gap-6">
       
-      {/* NAVEGACIÓN INSTITUCIONAL */}
-      <div className="w-full max-w-[480px] bg-[#0F0F0F] p-1.5 border border-white/5 rounded-2xl flex gap-1">
+      {/* NAVEGACIÓN INSTITUCIONAL TRIPLE */}
+      <div className="w-full max-w-[540px] bg-[#0F0F0F] p-1.5 border border-white/5 rounded-2xl flex gap-1">
+        <button 
+          onClick={() => setActiveTab('dataroom')}
+          className={`flex-1 py-2.5 text-[10px] md:text-[11px] font-bold uppercase tracking-wider rounded-xl transition-all ${
+            activeTab === 'dataroom' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/10' : 'text-gray-500 hover:text-gray-300'
+          }`}
+        >
+          🔍 Data Room
+        </button>
         <button 
           onClick={() => setActiveTab('kyc')}
-          className={`flex-1 py-2.5 text-[11px] font-bold uppercase tracking-wider rounded-xl transition-all ${
+          className={`flex-1 py-2.5 text-[10px] md:text-[11px] font-bold uppercase tracking-wider rounded-xl transition-all ${
             activeTab === 'kyc' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/10' : 'text-gray-500 hover:text-gray-300'
           }`}
         >
-          1. Registro & KYC
+          📋 1. KYC
         </button>
         <button 
           onClick={() => setActiveTab('payment')}
-          className={`flex-1 py-2.5 text-[11px] font-bold uppercase tracking-wider rounded-xl transition-all ${
+          className={`flex-1 py-2.5 text-[10px] md:text-[11px] font-bold uppercase tracking-wider rounded-xl transition-all ${
             activeTab === 'payment' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/10' : 'text-gray-500 hover:text-gray-300'
           }`}
         >
-          2. Terminal de Pago
+          ⚡ 2. Pago
         </button>
       </div>
 
       {/* CONTENIDO PRINCIPAL */}
-      <div className="w-full max-w-[480px] bg-[#0F0F0F] border border-white/5 rounded-3xl overflow-hidden shadow-2xl">
+      <div className="w-full max-w-[540px] bg-[#0F0F0F] border border-white/5 rounded-3xl overflow-hidden shadow-2xl">
         
-        {/* TAB 1: FORMULARIO KYC / ADMISIÓN */}
+        {/* TAB 0: DATA ROOM INFORMATIVO */}
+        {activeTab === 'dataroom' && (
+          <div>
+            <div className="p-8 border-b border-white/5 bg-gradient-to-b from-white/[0.02] to-transparent">
+              <span className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.3em]">Asset Overview</span>
+              <h2 className="text-2xl font-light text-white tracking-tight uppercase mt-2">Dossier de <span className="font-bold text-emerald-500">Inversión</span></h2>
+              <p className="text-[11px] text-gray-500 mt-1">Activo Subyacente: Complejo Corporativo Añelo - Vaca Muerta Corridor.</p>
+            </div>
+
+            <div className="p-8 space-y-6">
+              {/* MÉTRICAS CLAVE */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-white/[0.01] border border-white/5 p-4 rounded-xl">
+                  <p className="text-[9px] text-gray-500 uppercase font-bold mb-1">Rendimiento Estimado</p>
+                  <p className="text-xl font-mono font-bold text-emerald-400">12.5% <span className="text-xs text-gray-500">Anual (USD)</span></p>
+                </div>
+                <div className="bg-white/[0.01] border border-white/5 p-4 rounded-xl">
+                  <p className="text-[9px] text-gray-500 uppercase font-bold mb-1">Estructura Fiscal</p>
+                  <p className="text-sm font-mono font-bold text-white uppercase pt-1">Ley 19.640 <span className="text-[9px] text-emerald-500 block">Exento de Ganancias</span></p>
+                </div>
+              </div>
+
+              {/* DETALLES DEL PROYECTO REAL */}
+              <div className="space-y-3">
+                <h4 className="text-[10px] text-gray-400 uppercase font-black tracking-widest border-b border-white/5 pb-1">Especificaciones Técnicas</h4>
+                
+                <div className="flex justify-between items-center text-xs font-mono py-1">
+                  <span className="text-gray-500">Operador / Locatario:</span>
+                  <span className="text-white text-right font-bold">Corporación Sector Energético</span>
+                </div>
+                <div className="flex justify-between items-center text-xs font-mono py-1">
+                  <span className="text-gray-500">Ubicación Estratégica:</span>
+                  <span className="text-white text-right">Ruta 17, Añelo, Neuquén</span>
+                </div>
+                <div className="flex justify-between items-center text-xs font-mono py-1">
+                  <span className="text-gray-500">Subyacente Físico:</span>
+                  <span className="text-white text-right">Departamentos & Hub Comercial</span>
+                </div>
+                <div className="flex justify-between items-center text-xs font-mono py-1">
+                  <span className="text-gray-500">Distribución de Rentas:</span>
+                  <span className="text-emerald-400 text-right font-bold">Mensual automática en USDT</span>
+                </div>
+              </div>
+
+              {/* AUDITORÍA LEGAL / DOCUMENTACIÓN */}
+              <div className="space-y-2">
+                <h4 className="text-[10px] text-gray-400 uppercase font-black tracking-widest border-b border-white/5 pb-1">Marco Jurídico & Smart Contracts</h4>
+                <div className="p-3.5 bg-black rounded-xl border border-white/5 flex justify-between items-center">
+                  <div>
+                    <p className="text-xs text-gray-300 font-bold">Fideicomiso Fiduciario Sanova</p>
+                    <p className="text-[9px] text-gray-500 font-mono">Estructura legal radicada en Tierra del Fuego</p>
+                  </div>
+                  <span className="text-[10px] font-mono text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20 font-bold">AUDITADO</span>
+                </div>
+                <div className="p-3.5 bg-black rounded-xl border border-white/5 flex justify-between items-center">
+                  <div>
+                    <p className="text-xs text-gray-300 font-bold">Dirección del Token de Activo</p>
+                    <p className="text-[9px] text-gray-500 font-mono">Contrato verificado en Polygon network</p>
+                  </div>
+                  <span className="text-[9px] font-mono text-gray-400 bg-white/5 px-2 py-1 rounded">0xSNV...ANL</span>
+                </div>
+              </div>
+
+              {/* BOTÓN DE ACCIÓN */}
+              <button 
+                onClick={() => setActiveTab('kyc')}
+                className="w-full bg-white text-black hover:bg-gray-200 text-xs font-bold uppercase tracking-widest py-3.5 rounded-xl transition-all font-sans"
+              >
+                Iniciar Proceso de Suscripción →
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 1: FORMULARIO KYC */}
         {activeTab === 'kyc' && (
           <div>
             <div className="p-8 border-b border-white/5 bg-gradient-to-b from-white/[0.02] to-transparent">
               <span className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.3em]">Compliance Protocol</span>
               <h2 className="text-2xl font-light text-white tracking-tight uppercase mt-2">Admisión <span className="font-bold text-emerald-500">Whitelist</span></h2>
-              <p className="text-[11px] text-gray-500 mt-1 font-sans">Registro obligatorio para operar bajo el marco fiduciario de la Ley 19.640.</p>
+              <p className="text-[11px] text-gray-500 mt-1">Registro obligatorio bajo el marco fiduciario de la Ley 19.640.</p>
             </div>
 
             {!kycSubmitted ? (
               <form onSubmit={handleKycSubmit} className="p-8 space-y-5">
                 <div>
-                  <label className="text-[9px] text-gray-400 uppercase font-bold tracking-wider block mb-1.5">Nombre Completo / Razón Social</label>
-                  <input required name="fullName" value={formData.fullName} onChange={handleInputChange} type="text" placeholder="Ej: Juan Pérez o Inversiones S.A." className="w-full bg-white/[0.02] border border-white/10 rounded-xl px-4 py-3 text-xs text-white font-mono focus:outline-none focus:border-emerald-500/50 transition-all" />
+                  <label className="text-[9px] text-gray-400 uppercase font-bold block mb-1.5">Nombre Completo / Razón Social</label>
+                  <input required name="fullName" value={formData.fullName} onChange={handleInputChange} type="text" placeholder="Ej: Juan Pérez o Inversiones S.A." className="w-full bg-white/[0.02] border border-white/10 rounded-xl px-4 py-3 text-xs text-white font-mono focus:outline-none focus:border-emerald-500/50" />
                 </div>
-
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-[9px] text-gray-400 uppercase font-bold tracking-wider block mb-1.5">CUIT / CUIL</label>
-                    <input required name="cuit" value={formData.cuit} onChange={handleInputChange} type="text" placeholder="30-XXXXXXXX-0" className="w-full bg-white/[0.02] border border-white/10 rounded-xl px-4 py-3 text-xs text-white font-mono focus:outline-none focus:border-emerald-500/50 transition-all" />
+                    <label className="text-[9px] text-gray-400 uppercase font-bold block mb-1.5">CUIT / CUIL</label>
+                    <input required name="cuit" value={formData.cuit} onChange={handleInputChange} type="text" placeholder="30-XXXXXXXX-0" className="w-full bg-white/[0.02] border border-white/10 rounded-xl px-4 py-3 text-xs text-white font-mono focus:outline-none focus:border-emerald-500/50" />
                   </div>
                   <div>
-                    <label className="text-[9px] text-gray-400 uppercase font-bold tracking-wider block mb-1.5">Perfil de Inversor</label>
-                    <select name="investorType" value={formData.investorType} onChange={handleInputChange} className="w-full bg-[#141414] border border-white/10 rounded-xl px-3 py-3 text-xs text-white font-mono focus:outline-none focus:border-emerald-500/50 transition-all">
+                    <label className="text-[9px] text-gray-400 uppercase font-bold block mb-1.5">Perfil</label>
+                    <select name="investorType" value={formData.investorType} onChange={handleInputChange} className="w-full bg-[#141414] border border-white/10 rounded-xl px-3 py-3 text-xs text-white font-mono focus:outline-none focus:border-emerald-500/50">
                       <option value="retail">Minorista / Privado</option>
                       <option value="qualified">Calificado / Advisor</option>
                       <option value="institutional">Fondo Institucional</option>
                     </select>
                   </div>
                 </div>
-
                 <div>
-                  <label className="text-[9px] text-gray-400 uppercase font-bold tracking-wider block mb-1.5">Email de Contacto</label>
-                  <input required name="email" value={formData.email} onChange={handleInputChange} type="email" placeholder="inversor@link.com" className="w-full bg-white/[0.02] border border-white/10 rounded-xl px-4 py-3 text-xs text-white font-mono focus:outline-none focus:border-emerald-500/50 transition-all" />
+                  <label className="text-[9px] text-gray-400 uppercase font-bold block mb-1.5">Email</label>
+                  <input required name="email" value={formData.email} onChange={handleInputChange} type="email" placeholder="inversor@link.com" className="w-full bg-white/[0.02] border border-white/10 rounded-xl px-4 py-3 text-xs text-white font-mono focus:outline-none focus:border-emerald-500/50" />
                 </div>
-
                 <div>
-                  <label className="text-[9px] text-gray-400 uppercase font-bold tracking-wider block mb-1.5">Dirección de Wallet Destino (Polygon/Base)</label>
-                  <input required name="walletAddress" value={formData.walletAddress} onChange={handleInputChange} type="text" placeholder="0x..." className="w-full bg-white/[0.02] border border-white/10 rounded-xl px-4 py-3 text-xs text-emerald-400 font-mono focus:outline-none focus:border-emerald-500/50 transition-all" />
+                  <label className="text-[9px] text-gray-400 uppercase font-bold block mb-1.5">Wallet Destino (Polygon/Base)</label>
+                  <input required name="walletAddress" value={formData.walletAddress} onChange={handleInputChange} type="text" placeholder="0x..." className="w-full bg-white/[0.02] border border-white/10 rounded-xl px-4 py-3 text-xs text-emerald-400 font-mono focus:outline-none focus:border-emerald-500/50" />
                 </div>
-
                 <label className="flex items-start gap-3 cursor-pointer pt-2">
                   <input required name="declaration" checked={formData.declaration} onChange={handleInputChange} type="checkbox" className="mt-0.5 accent-emerald-500" />
-                  <span className="text-[10px] text-gray-500 leading-relaxed">
-                    Declaro bajo juramento que los fondos provienen de actividades lícitas y acepto los términos fiduciarios de Sanova Global SAS.
-                  </span>
+                  <span className="text-[10px] text-gray-500 leading-relaxed">Declaro bajo juramento que los fondos provienen de actividades lícitas y acepto los términos fiduciarios de Sanova Global SAS.</span>
                 </label>
-
-                <button type="submit" className="w-full bg-emerald-500 hover:bg-emerald-600 text-black text-xs font-bold uppercase tracking-widest py-4 rounded-xl shadow-lg transition-all mt-4">
-                  Enviar para Auditoría Legal
-                </button>
+                <button type="submit" className="w-full bg-emerald-500 hover:bg-emerald-600 text-black text-xs font-bold uppercase tracking-widest py-4 rounded-xl transition-all">Enviar para Auditoría Legal</button>
               </form>
             ) : (
               <div className="p-8 text-center space-y-4">
                 <div className="w-12 h-12 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full flex items-center justify-center mx-auto text-xl font-bold">✓</div>
                 <h3 className="text-white text-base font-bold uppercase tracking-wider">Solicitud Recibida</h3>
                 <p className="text-[11px] text-gray-400 leading-relaxed max-w-[320px] mx-auto">
-                  Los datos de la wallet <span className="text-emerald-400 font-mono">{formData.walletAddress.slice(0,6)}...{formData.walletAddress.slice(-4)}</span> están siendo auditados por el oficial de cumplimiento. Recibirás la aprobación en tu mail <span className="text-gray-300 font-mono">{formData.email}</span>.
+                  Los datos están en proceso de verificación. Puede avanzar a la terminal para simular el entorno operativo.
                 </p>
-                <button onClick={() => setKycSubmitted(false)} className="text-[10px] text-gray-500 hover:text-gray-400 underline block mx-auto pt-4">
-                  Editar Formulario
-                </button>
+                <button onClick={() => setActiveTab('payment')} className="w-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-widest py-3 rounded-xl transition-all mt-2">Ir a la Terminal de Pago</button>
               </div>
             )}
           </div>
         )}
 
-        {/* TAB 2: TERMINAL DE PAGO (El módulo que ya tenías) */}
+        {/* TAB 2: TERMINAL DE PAGO */}
         {activeTab === 'payment' && (
           <div>
             <div className="p-8 border-b border-white/5 bg-gradient-to-b from-white/[0.02] to-transparent">
@@ -171,7 +236,6 @@ export default function TokenSettlement() {
                 <div className="p-6 border border-blue-500/20 bg-blue-500/[0.02] rounded-2xl text-center space-y-3">
                   <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse mx-auto"></div>
                   <p className="text-xs text-blue-400 font-mono uppercase tracking-wider">¡Pago Detectado en Bloque!</p>
-                  <p className="text-[9px] font-mono text-gray-500 truncate">Hash: {txHash}</p>
                 </div>
               )}
 
@@ -192,7 +256,7 @@ export default function TokenSettlement() {
 
       {/* PANEL DE CONTROL DE ADMINISTRADOR */}
       {activeTab === 'payment' && (
-        <div className="w-full max-w-[480px] bg-[#141414] border border-dashed border-white/10 rounded-2xl p-6 space-y-4">
+        <div className="w-full max-w-[540px] bg-[#141414] border border-dashed border-white/10 rounded-2xl p-6 space-y-4">
           <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">⚙️ Panel de Simulación (Sanova Admin)</p>
           <div className="grid grid-cols-3 gap-2">
             <button onClick={simularPagoDetectado} className="py-2.5 px-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 text-[10px] font-bold rounded-xl border border-blue-500/20 transition-all">1. Detectar</button>
