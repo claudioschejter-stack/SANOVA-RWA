@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 
 // ==========================================
-// COMPONENTE INTERNO 1: TARJETA DE PROYECTOS
+// COMPONENTE INTERNO 1: TARJETA DE PROYECTOS (DISEÑO RESTAURADO)
 // ==========================================
 function ProyectoCard({ proyecto, isSelected, onSelect }: { proyecto: any, isSelected: boolean, onSelect: () => void }) {
   return (
@@ -12,11 +12,12 @@ function ProyectoCard({ proyecto, isSelected, onSelect }: { proyecto: any, isSel
       }`}
       onClick={onSelect}
     >
-      <div className="relative h-48 w-full overflow-hidden bg-black">
+      {/* Contenedor de la Foto con Efecto Zoom Hover y Degradado */}
+      <div className="relative h-48 w-full overflow-hidden bg-black group">
         <img 
           src={proyecto.image} 
           alt={proyecto.title} 
-          className="w-full h-full object-cover opacity-60"
+          className="w-full h-full object-cover opacity-60 group-hover:scale-110 group-hover:opacity-80 transition-transform transition-opacity duration-500"
         />
         <div className="absolute top-4 left-4 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded-md border border-white/10">
           <span className="text-[9px] font-mono text-gray-400">{proyecto.id}</span>
@@ -24,34 +25,38 @@ function ProyectoCard({ proyecto, isSelected, onSelect }: { proyecto: any, isSel
         <div className="absolute top-4 right-4 bg-emerald-500/90 text-black text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md">
           {proyecto.type}
         </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0F0F0F] to-transparent"></div>
+        {/* Degradado sobre la foto */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0F0F0F] via-[#0F0F0F]/20 to-transparent"></div>
       </div>
 
+      {/* Detalles e Información del Activo */}
       <div className="p-6 space-y-4 flex-1 flex flex-col justify-between">
         <div className="space-y-2">
-          <h4 className="text-xl font-bold tracking-tight text-white">{proyecto.title}</h4>
+          <h4 className="text-xl font-bold tracking-tight text-white group-hover:text-emerald-400 transition-colors">{proyecto.title}</h4>
           <p className="text-xs text-emerald-400 font-mono">📍 {proyecto.location}</p>
           <p className="text-xs text-gray-400 leading-relaxed pt-1 font-sans">{proyecto.desc}</p>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 pt-4">
+        {/* Métricas e Indicadores Financieros */}
+        <div className="grid grid-cols-2 gap-3 pt-4 border-t border-white/5 mt-4">
           <div className="bg-white/[0.02] border border-white/5 p-3 rounded-xl">
-            <p className="text-[8px] text-gray-500 uppercase font-bold mb-0.5">Rendimiento</p>
-            <p className="text-base font-mono font-bold text-emerald-400">{proyecto.roi}</p>
+            <p className="text-[8px] text-gray-500 uppercase font-black mb-0.5 tracking-widest">Rendimiento</p>
+            <p className="text-base font-mono font-bold text-emerald-400">{proyecto.roi} <span className="text-[10px] text-gray-500">Target</span></p>
           </div>
           <div className="bg-white/[0.02] border border-white/5 p-3 rounded-xl overflow-hidden">
-            <p className="text-[8px] text-gray-500 uppercase font-bold mb-0.5">Estructura</p>
+            <p className="text-[8px] text-gray-500 uppercase font-black mb-0.5 tracking-widest">Estructura Fiscal</p>
             <p className="text-[10px] font-mono font-bold text-white uppercase truncate" title={proyecto.fiscal}>{proyecto.fiscal}</p>
           </div>
         </div>
 
         <button 
-          type="button"
-          className={`w-full mt-6 text-xs font-bold uppercase tracking-wider py-3.5 rounded-xl border transition-all ${
-            isSelected ? 'bg-emerald-500 text-black border-transparent shadow-lg' : 'bg-white/5 text-white border-white/5 hover:bg-white/10'
+          className={`w-full mt-6 text-xs font-bold uppercase tracking-widest py-3.5 rounded-xl border transition-all ${
+            isSelected 
+            ? 'bg-emerald-500 text-black border-transparent shadow-lg shadow-emerald-500/10' 
+            : 'bg-white/5 text-white border-white/5 hover:bg-white/10'
           }`}
         >
-          {isSelected ? 'Terminal Seleccionada ✓' : 'Seleccionar Activo'}
+          {isSelected ? 'TERMINAL SELECCIONADA ✓' : 'ANALIZAR LIQUIDACIÓN'}
         </button>
       </div>
     </div>
@@ -59,7 +64,7 @@ function ProyectoCard({ proyecto, isSelected, onSelect }: { proyecto: any, isSel
 }
 
 // ==========================================
-// COMPONENTE INTERNO 2: FLUX TERMINAL (KYC / PAGO)
+// COMPONENTE INTERNO 2: TERMINAL FLUX (KYC / PAGO)
 // ==========================================
 function TerminalFlujo({ selectedProject }: { selectedProject: string }) {
   const [activeTab, setActiveTab] = useState('kyc');
@@ -92,7 +97,7 @@ function TerminalFlujo({ selectedProject }: { selectedProject: string }) {
   };
 
   return (
-    <div className="w-full max-w-[480px] space-y-6 pt-8 border-t border-dashed border-white/10">
+    <div className="w-full max-w-[480px] space-y-6 pt-8 border-t border-dashed border-white/10 animate-fade-in mt-16">
       <div className="text-center">
         <span className="text-[9px] font-mono text-gray-500 uppercase tracking-widest">Ejecución de Contrato para</span>
         <h3 className="text-lg font-bold text-emerald-400 font-mono mt-1">{selectedProject}</h3>
