@@ -1,271 +1,180 @@
 'use client';
 import React, { useState } from 'react';
 
-export default function TokenSettlement() {
-  const [activeTab, setActiveTab] = useState('dataroom'); // Tabs: dataroom, kyc, payment
+export default function SanovaPlatform() {
+  const [selectedProject, setSelectedProject] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState('dataroom'); // dataroom, kyc, payment
   const [status, setStatus] = useState('AWAITING_PAYMENT'); 
   const [txHash, setTxHash] = useState('');
   
-  // Estado del Formulario KYC
+  // Estado KYC
   const [formData, setFormData] = useState({
-    fullName: '',
-    cuit: '',
-    email: '',
-    investorType: 'retail',
-    walletAddress: '',
-    declaration: false
+    fullName: '', cuit: '', email: '', investorType: 'retail', walletAddress: '', declaration: false
   });
   const [kycSubmitted, setKycSubmitted] = useState(false);
 
   const ticketPrice = 50;
   const tokens = 10;
 
-  const handleInputChange = (e: any) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
-  };
+  // Proyectos del catálogo original
+  const proyectos = [
+    {
+      id: 'SNV-ANL-001',
+      title: 'Hotel & Hub Comercial Añelo',
+      location: 'Vaca Muerta, Neuquén',
+      roi: '12.5%',
+      fiscal: 'Ley 19.640 (Exento)',
+      type: 'Desarrollo Escala',
+      bg: 'from-emerald-500/20 to-transparent'
+    },
+    {
+      id: 'SNV-TLH-002',
+      title: 'Residencias Premium Tolhuin',
+      location: 'Tierra del Fuego',
+      roi: '11.0%',
+      fiscal: 'Ley 19.640 (100% Beneficio)',
+      type: 'Ecoturismo RWA',
+      bg: 'from-blue-500/20 to-transparent'
+    },
+    {
+      id: 'SNV-MDZ-003',
+      title: 'Finca Tokenizada Mendoza',
+      location: 'Valle de Uco, Mendoza',
+      roi: '14.2%',
+      fiscal: 'Optimización Estructurada',
+      type: 'Agro-Real Estate',
+      bg: 'from-purple-500/20 to-transparent'
+    }
+  ];
 
-  const handleKycSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (formData.declaration && formData.walletAddress) setKycSubmitted(true);
-  };
-
-  // Funciones del simulador
-  const simularPagoDetectado = () => {
-    setStatus('DETECTED');
-    setTxHash('0x3ba76c8db7417e13295963b516823c914bf4087b3a1d2938fd8a99479e0018ac');
-  };
+  const simularPagoDetectado = () => { setStatus('DETECTED'); setTxHash('0x3ba76c8db7417e13295963b516823c914bf4087b3a1d2938fd8a99479e0018ac'); };
   const simularPagoExitoso = () => setStatus('SUCCESS');
   const reiniciarSimulador = () => { setStatus('AWAITING_PAYMENT'); setTxHash(''); };
 
   return (
-    <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center p-4 md:p-6 gap-6">
+    <div className="min-h-screen bg-[#050505] text-white p-4 md:p-12 space-y-12 flex flex-col items-center">
       
-      {/* NAVEGACIÓN INSTITUCIONAL TRIPLE */}
-      <div className="w-full max-w-[540px] bg-[#0F0F0F] p-1.5 border border-white/5 rounded-2xl flex gap-1">
-        <button 
-          onClick={() => setActiveTab('dataroom')}
-          className={`flex-1 py-2.5 text-[10px] md:text-[11px] font-bold uppercase tracking-wider rounded-xl transition-all ${
-            activeTab === 'dataroom' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/10' : 'text-gray-500 hover:text-gray-300'
-          }`}
-        >
-          🔍 Data Room
-        </button>
-        <button 
-          onClick={() => setActiveTab('kyc')}
-          className={`flex-1 py-2.5 text-[10px] md:text-[11px] font-bold uppercase tracking-wider rounded-xl transition-all ${
-            activeTab === 'kyc' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/10' : 'text-gray-500 hover:text-gray-300'
-          }`}
-        >
-          📋 1. KYC
-        </button>
-        <button 
-          onClick={() => setActiveTab('payment')}
-          className={`flex-1 py-2.5 text-[10px] md:text-[11px] font-bold uppercase tracking-wider rounded-xl transition-all ${
-            activeTab === 'payment' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/10' : 'text-gray-500 hover:text-gray-300'
-          }`}
-        >
-          ⚡ 2. Pago
-        </button>
+      {/* HEADER DE LA COMPAÑÍA */}
+      <div className="w-full max-w-5xl text-center space-y-3 pt-6">
+        <span className="text-[11px] font-black text-emerald-500 uppercase tracking-[0.4em]">Sanova Global SAS</span>
+        <h1 className="text-4xl md:text-5xl font-light tracking-tight uppercase">Real World Asset <span className="font-bold text-emerald-500 block md:inline">Marketplace</span></h1>
+        <p className="text-xs text-gray-500 max-w-xl mx-auto font-mono">Infraestructura Blockchain para la tokenización de activos inmobiliarios y corporativos de alta eficiencia.</p>
       </div>
 
-      {/* CONTENIDO PRINCIPAL */}
-      <div className="w-full max-w-[540px] bg-[#0F0F0F] border border-white/5 rounded-3xl overflow-hidden shadow-2xl">
+      {/* --- SECCIÓN 1: CATÁLOGO DE TOKENS (Tu Landing original) --- */}
+      <div className="w-full max-w-5xl space-y-6">
+        <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest border-b border-white/5 pb-2">📂 Activos Disponibles para Suscripción</h3>
         
-        {/* TAB 0: DATA ROOM INFORMATIVO */}
-        {activeTab === 'dataroom' && (
-          <div>
-            <div className="p-8 border-b border-white/5 bg-gradient-to-b from-white/[0.02] to-transparent">
-              <span className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.3em]">Asset Overview</span>
-              <h2 className="text-2xl font-light text-white tracking-tight uppercase mt-2">Dossier de <span className="font-bold text-emerald-500">Inversión</span></h2>
-              <p className="text-[11px] text-gray-500 mt-1">Activo Subyacente: Complejo Corporativo Añelo - Vaca Muerta Corridor.</p>
-            </div>
-
-            <div className="p-8 space-y-6">
-              {/* MÉTRICAS CLAVE */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white/[0.01] border border-white/5 p-4 rounded-xl">
-                  <p className="text-[9px] text-gray-500 uppercase font-bold mb-1">Rendimiento Estimado</p>
-                  <p className="text-xl font-mono font-bold text-emerald-400">12.5% <span className="text-xs text-gray-500">Anual (USD)</span></p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {proyectos.map((p) => (
+            <div key={p.id} className="bg-[#0F0F0F] border border-white/5 rounded-2xl overflow-hidden flex flex-col justify-between p-6 hover:border-emerald-500/20 transition-all group shadow-xl">
+              <div className="space-y-4">
+                <div className="flex justify-between items-start">
+                  <span className="text-[9px] font-mono text-gray-500">{p.id}</span>
+                  <span className="text-[9px] font-mono bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/10 font-bold uppercase">{p.type}</span>
                 </div>
-                <div className="bg-white/[0.01] border border-white/5 p-4 rounded-xl">
-                  <p className="text-[9px] text-gray-500 uppercase font-bold mb-1">Estructura Fiscal</p>
-                  <p className="text-sm font-mono font-bold text-white uppercase pt-1">Ley 19.640 <span className="text-[9px] text-emerald-500 block">Exento de Ganancias</span></p>
+                <div>
+                  <h4 className="text-lg font-bold group-hover:text-emerald-400 transition-colors">{p.title}</h4>
+                  <p className="text-xs text-gray-500 font-mono mt-0.5">📍 {p.location}</p>
                 </div>
-              </div>
-
-              {/* DETALLES DEL PROYECTO REAL */}
-              <div className="space-y-3">
-                <h4 className="text-[10px] text-gray-400 uppercase font-black tracking-widest border-b border-white/5 pb-1">Especificaciones Técnicas</h4>
-                
-                <div className="flex justify-between items-center text-xs font-mono py-1">
-                  <span className="text-gray-500">Operador / Locatario:</span>
-                  <span className="text-white text-right font-bold">Corporación Sector Energético</span>
-                </div>
-                <div className="flex justify-between items-center text-xs font-mono py-1">
-                  <span className="text-gray-500">Ubicación Estratégica:</span>
-                  <span className="text-white text-right">Ruta 17, Añelo, Neuquén</span>
-                </div>
-                <div className="flex justify-between items-center text-xs font-mono py-1">
-                  <span className="text-gray-500">Subyacente Físico:</span>
-                  <span className="text-white text-right">Departamentos & Hub Comercial</span>
-                </div>
-                <div className="flex justify-between items-center text-xs font-mono py-1">
-                  <span className="text-gray-500">Distribución de Rentas:</span>
-                  <span className="text-emerald-400 text-right font-bold">Mensual automática en USDT</span>
-                </div>
-              </div>
-
-              {/* AUDITORÍA LEGAL / DOCUMENTACIÓN */}
-              <div className="space-y-2">
-                <h4 className="text-[10px] text-gray-400 uppercase font-black tracking-widest border-b border-white/5 pb-1">Marco Jurídico & Smart Contracts</h4>
-                <div className="p-3.5 bg-black rounded-xl border border-white/5 flex justify-between items-center">
-                  <div>
-                    <p className="text-xs text-gray-300 font-bold">Fideicomiso Fiduciario Sanova</p>
-                    <p className="text-[9px] text-gray-500 font-mono">Estructura legal radicada en Tierra del Fuego</p>
+                <div className="grid grid-cols-2 gap-2 pt-2">
+                  <div className="bg-white/[0.01] p-2.5 rounded-xl border border-white/5">
+                    <p className="text-[8px] text-gray-500 uppercase font-black">Rendimiento</p>
+                    <p className="text-sm font-mono font-bold text-emerald-400">{p.roi} anual</p>
                   </div>
-                  <span className="text-[10px] font-mono text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20 font-bold">AUDITADO</span>
-                </div>
-                <div className="p-3.5 bg-black rounded-xl border border-white/5 flex justify-between items-center">
-                  <div>
-                    <p className="text-xs text-gray-300 font-bold">Dirección del Token de Activo</p>
-                    <p className="text-[9px] text-gray-500 font-mono">Contrato verificado en Polygon network</p>
+                  <div className="bg-white/[0.01] p-2.5 rounded-xl border border-white/5">
+                    <p className="text-[8px] text-gray-500 uppercase font-black">Fiscalidad</p>
+                    <p className="text-[9px] font-mono font-bold truncate text-white" title={p.fiscal}>{p.fiscal}</p>
                   </div>
-                  <span className="text-[9px] font-mono text-gray-400 bg-white/5 px-2 py-1 rounded">0xSNV...ANL</span>
                 </div>
               </div>
-
-              {/* BOTÓN DE ACCIÓN */}
               <button 
-                onClick={() => setActiveTab('kyc')}
-                className="w-full bg-white text-black hover:bg-gray-200 text-xs font-bold uppercase tracking-widest py-3.5 rounded-xl transition-all font-sans"
+                onClick={() => { setSelectedProject(p.title); setActiveTab('dataroom'); }}
+                className="w-full mt-6 bg-white/5 hover:bg-emerald-500 hover:text-black text-[11px] font-bold uppercase tracking-wider py-3 rounded-xl border border-white/5 hover:border-transparent transition-all"
               >
-                Iniciar Proceso de Suscripción →
+                Analizar Liquidación →
               </button>
             </div>
+          ))}
+        </div>
+      </div>
+
+      {/* --- SECCIÓN 2: TERMINAL DE PROCESAMIENTO MODULAR (Lo nuevo que construimos) --- */}
+      {selectedProject && (
+        <div className="w-full max-w-[540px] space-y-6 pt-6 border-t border-dashed border-white/10 animate-fade-in">
+          
+          <div className="text-center">
+            <p className="text-[10px] font-mono text-gray-500 uppercase">Terminal de Operaciones para:</p>
+            <h3 className="text-lg font-bold text-emerald-400">{selectedProject}</h3>
           </div>
-        )}
 
-        {/* TAB 1: FORMULARIO KYC */}
-        {activeTab === 'kyc' && (
-          <div>
-            <div className="p-8 border-b border-white/5 bg-gradient-to-b from-white/[0.02] to-transparent">
-              <span className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.3em]">Compliance Protocol</span>
-              <h2 className="text-2xl font-light text-white tracking-tight uppercase mt-2">Admisión <span className="font-bold text-emerald-500">Whitelist</span></h2>
-              <p className="text-[11px] text-gray-500 mt-1">Registro obligatorio bajo el marco fiduciario de la Ley 19.640.</p>
-            </div>
+          {/* NAVEGACIÓN DE LA TERMINAL */}
+          <div className="bg-[#0F0F0F] p-1.5 border border-white/5 rounded-2xl flex gap-1">
+            <button onClick={() => setActiveTab('dataroom')} className={`flex-1 py-2 text-[10px] font-bold uppercase tracking-wider rounded-xl transition-all ${activeTab === 'dataroom' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/10' : 'text-gray-500'}`}>🔍 Data Room</button>
+            <button onClick={() => setActiveTab('kyc')} className={`flex-1 py-2 text-[10px] font-bold uppercase tracking-wider rounded-xl transition-all ${activeTab === 'kyc' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/10' : 'text-gray-500'}`}>📋 1. KYC</button>
+            <button onClick={() => setActiveTab('payment')} className={`flex-1 py-2 text-[10px] font-bold uppercase tracking-wider rounded-xl transition-all ${activeTab === 'payment' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/10' : 'text-gray-500'}`}>⚡ 2. Pago</button>
+          </div>
 
-            {!kycSubmitted ? (
-              <form onSubmit={handleKycSubmit} className="p-8 space-y-5">
-                <div>
-                  <label className="text-[9px] text-gray-400 uppercase font-bold block mb-1.5">Nombre Completo / Razón Social</label>
-                  <input required name="fullName" value={formData.fullName} onChange={handleInputChange} type="text" placeholder="Ej: Juan Pérez o Inversiones S.A." className="w-full bg-white/[0.02] border border-white/10 rounded-xl px-4 py-3 text-xs text-white font-mono focus:outline-none focus:border-emerald-500/50" />
+          {/* CUERPO DE LA TERMINAL */}
+          <div className="bg-[#0F0F0F] border border-white/5 rounded-3xl overflow-hidden shadow-2xl">
+            {activeTab === 'dataroom' && (
+              <div className="p-8 space-y-6">
+                <span className="text-[9px] font-black text-emerald-500 uppercase tracking-widest block">Dossier de Inversión</span>
+                <p className="text-xs text-gray-400 leading-relaxed">Estás auditando el flujo financiero del fideicomiso. El activo se distribuye de forma directa mediante Smart Contracts en la red elegida.</p>
+                <div className="space-y-2 text-xs font-mono bg-black/40 p-4 rounded-xl border border-white/5">
+                  <div className="flex justify-between"><span className="text-gray-500">Distribución:</span><span className="text-emerald-400 font-bold">Mensual (USDT)</span></div>
+                  <div className="flex justify-between"><span className="text-gray-500">Jurisdicción:</span><span className="text-white">Tierra del Fuego (Ley 19.640)</span></div>
+                  <div className="flex justify-between"><span className="text-gray-500">Estructura Legal:</span><span className="text-white font-bold">Sanova Global SAS</span></div>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-[9px] text-gray-400 uppercase font-bold block mb-1.5">CUIT / CUIL</label>
-                    <input required name="cuit" value={formData.cuit} onChange={handleInputChange} type="text" placeholder="30-XXXXXXXX-0" className="w-full bg-white/[0.02] border border-white/10 rounded-xl px-4 py-3 text-xs text-white font-mono focus:outline-none focus:border-emerald-500/50" />
+                <button onClick={() => setActiveTab('kyc')} className="w-full bg-white text-black text-xs font-bold uppercase tracking-widest py-3.5 rounded-xl transition-all">Siguiente: Validar KYC →</button>
+              </div>
+            )}
+
+            {activeTab === 'kyc' && (
+              <div className="p-8 space-y-4">
+                <span className="text-[9px] font-black text-emerald-500 uppercase tracking-widest block">Compliance Protocol</span>
+                {!kycSubmitted ? (
+                  <div className="space-y-4">
+                    <input type="text" placeholder="Nombre Completo / Razón Social" className="w-full bg-white/[0.02] border border-white/10 rounded-xl px-4 py-3 text-xs font-mono text-white" />
+                    <input type="text" placeholder="CUIT (30-XXXXXXXX-0)" className="w-full bg-white/[0.02] border border-white/10 rounded-xl px-4 py-3 text-xs font-mono text-white" />
+                    <input type="text" placeholder="Wallet Destino (0x...)" className="w-full bg-white/[0.02] border border-white/10 rounded-xl px-4 py-3 text-xs font-mono text-emerald-400" />
+                    <button onClick={() => setKycSubmitted(true)} className="w-full bg-emerald-500 text-black text-xs font-bold uppercase tracking-widest py-3.5 rounded-xl transition-all">Enviar para Auditoría Legal</button>
                   </div>
-                  <div>
-                    <label className="text-[9px] text-gray-400 uppercase font-bold block mb-1.5">Perfil</label>
-                    <select name="investorType" value={formData.investorType} onChange={handleInputChange} className="w-full bg-[#141414] border border-white/10 rounded-xl px-3 py-3 text-xs text-white font-mono focus:outline-none focus:border-emerald-500/50">
-                      <option value="retail">Minorista / Privado</option>
-                      <option value="qualified">Calificado / Advisor</option>
-                      <option value="institutional">Fondo Institucional</option>
-                    </select>
+                ) : (
+                  <div className="text-center py-4 space-y-3">
+                    <p className="text-xs text-emerald-400 font-bold">✓ Datos Auditados con éxito</p>
+                    <button onClick={() => setActiveTab('payment')} className="w-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-widest py-3 rounded-xl">Ir a la Terminal de Pago</button>
                   </div>
+                )}
+              </div>
+            )}
+
+            {activeTab === 'payment' && (
+              <div className="p-8 space-y-6">
+                <div className="bg-white/[0.02] border border-white/5 p-5 rounded-2xl flex justify-between items-center">
+                  <div><p className="text-[8px] text-gray-500 uppercase font-bold">Total Liquidación</p><p className="text-xl font-mono font-bold">${tokens * ticketPrice} USDT</p></div>
+                  <div className="text-right"><p className="text-[8px] text-gray-500 uppercase font-bold">Red</p><p className="text-xs font-mono text-emerald-500 font-bold">Polygon</p></div>
                 </div>
-                <div>
-                  <label className="text-[9px] text-gray-400 uppercase font-bold block mb-1.5">Email</label>
-                  <input required name="email" value={formData.email} onChange={handleInputChange} type="email" placeholder="inversor@link.com" className="w-full bg-white/[0.02] border border-white/10 rounded-xl px-4 py-3 text-xs text-white font-mono focus:outline-none focus:border-emerald-500/50" />
-                </div>
-                <div>
-                  <label className="text-[9px] text-gray-400 uppercase font-bold block mb-1.5">Wallet Destino (Polygon/Base)</label>
-                  <input required name="walletAddress" value={formData.walletAddress} onChange={handleInputChange} type="text" placeholder="0x..." className="w-full bg-white/[0.02] border border-white/10 rounded-xl px-4 py-3 text-xs text-emerald-400 font-mono focus:outline-none focus:border-emerald-500/50" />
-                </div>
-                <label className="flex items-start gap-3 cursor-pointer pt-2">
-                  <input required name="declaration" checked={formData.declaration} onChange={handleInputChange} type="checkbox" className="mt-0.5 accent-emerald-500" />
-                  <span className="text-[10px] text-gray-500 leading-relaxed">Declaro bajo juramento que los fondos provienen de actividades lícitas y acepto los términos fiduciarios de Sanova Global SAS.</span>
-                </label>
-                <button type="submit" className="w-full bg-emerald-500 hover:bg-emerald-600 text-black text-xs font-bold uppercase tracking-widest py-4 rounded-xl transition-all">Enviar para Auditoría Legal</button>
-              </form>
-            ) : (
-              <div className="p-8 text-center space-y-4">
-                <div className="w-12 h-12 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full flex items-center justify-center mx-auto text-xl font-bold">✓</div>
-                <h3 className="text-white text-base font-bold uppercase tracking-wider">Solicitud Recibida</h3>
-                <p className="text-[11px] text-gray-400 leading-relaxed max-w-[320px] mx-auto">
-                  Los datos están en proceso de verificación. Puede avanzar a la terminal para simular el entorno operativo.
-                </p>
-                <button onClick={() => setActiveTab('payment')} className="w-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-widest py-3 rounded-xl transition-all mt-2">Ir a la Terminal de Pago</button>
+                {status === 'AWAITING_PAYMENT' && <div className="p-5 border border-amber-500/20 bg-amber-500/[0.02] rounded-xl text-center text-xs text-amber-400 font-mono animate-pulse">Esperando depósito on-chain...</div>}
+                {status === 'DETECTED' && <div className="p-5 border border-blue-500/20 bg-blue-500/[0.02] rounded-xl text-center text-xs text-blue-400 font-mono">¡Pago Detectado! Procesando emisión fiduciaria...</div>}
+                {status === 'SUCCESS' && <div className="p-5 border border-emerald-500/20 bg-emerald-500/[0.02] rounded-xl text-center text-xs text-emerald-400 font-mono">✓ Inversión Consolidada. Tokens asignados.</div>}
               </div>
             )}
           </div>
-        )}
 
-        {/* TAB 2: TERMINAL DE PAGO */}
-        {activeTab === 'payment' && (
-          <div>
-            <div className="p-8 border-b border-white/5 bg-gradient-to-b from-white/[0.02] to-transparent">
-              <div className="flex justify-between items-center mb-6">
-                <span className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.3em]">Settlement Phase</span>
-                <span className="text-[10px] font-mono text-gray-500">ID: SNV-ANL-001</span>
+          {/* PANEL DE CONTROL DE ADMINISTRADOR */}
+          {activeTab === 'payment' && (
+            <div className="bg-[#141414] border border-dashed border-white/10 rounded-2xl p-4 space-y-3">
+              <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest text-center">⚙️ Panel de Simulación Webhook</p>
+              <div className="grid grid-cols-3 gap-2">
+                <button onClick={simularPagoDetectado} className="py-2 bg-blue-600/20 text-blue-400 text-[10px] font-bold rounded-lg border border-blue-500/20">1. Detectar</button>
+                <button onClick={simularPagoExitoso} disabled={status !== 'DETECTED'} className="py-2 bg-emerald-600/20 text-emerald-400 text-[10px] font-bold rounded-lg border border-emerald-500/20 disabled:opacity-20">2. Confirmar</button>
+                <button onClick={reiniciarSimulador} className="py-2 bg-white/5 text-gray-400 text-[10px] font-bold rounded-lg">Reiniciar</button>
               </div>
-              <h2 className="text-3xl font-light text-white tracking-tight uppercase">Terminal de <span className="font-bold text-emerald-500">Pago</span></h2>
             </div>
-
-            <div className="p-8 space-y-8">
-              <div className="bg-white/[0.02] border border-white/5 p-6 rounded-2xl flex justify-between items-center">
-                <div>
-                  <p className="text-[9px] text-gray-500 uppercase font-bold mb-1">Monto a Enviar</p>
-                  <p className="text-2xl font-mono font-bold text-white">${tokens * ticketPrice} <span className="text-xs text-gray-500">USDT</span></p>
-                </div>
-                <div className="text-right">
-                  <p className="text-[9px] text-gray-500 uppercase font-bold mb-1">Red sugerida</p>
-                  <p className="text-sm font-mono text-emerald-500 font-bold">Polygon (PoS)</p>
-                </div>
-              </div>
-
-              {status === 'AWAITING_PAYMENT' && (
-                <div className="p-6 border border-amber-500/20 bg-amber-500/[0.02] rounded-2xl text-center space-y-3">
-                  <div className="w-3 h-3 bg-amber-500 rounded-full animate-ping mx-auto"></div>
-                  <p className="text-xs text-amber-400 font-mono uppercase tracking-wider">Esperando depósito on-chain...</p>
-                </div>
-              )}
-
-              {status === 'DETECTED' && (
-                <div className="p-6 border border-blue-500/20 bg-blue-500/[0.02] rounded-2xl text-center space-y-3">
-                  <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse mx-auto"></div>
-                  <p className="text-xs text-blue-400 font-mono uppercase tracking-wider">¡Pago Detectado en Bloque!</p>
-                </div>
-              )}
-
-              {status === 'SUCCESS' && (
-                <div className="p-6 border border-emerald-500/20 bg-emerald-500/[0.02] rounded-2xl text-center space-y-3">
-                  <div className="w-6 h-6 bg-emerald-500/20 text-emerald-500 rounded-full flex items-center justify-center mx-auto text-xs font-bold">✓</div>
-                  <p className="text-xs text-emerald-400 font-mono uppercase tracking-wider">Inversión Consolidada</p>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        <div className="p-6 bg-black border-t border-white/5 text-center">
-          <span className="text-[8px] text-gray-600 font-mono uppercase tracking-widest">Sanova Global Ledger Node v1.0</span>
-        </div>
-      </div>
-
-      {/* PANEL DE CONTROL DE ADMINISTRADOR */}
-      {activeTab === 'payment' && (
-        <div className="w-full max-w-[540px] bg-[#141414] border border-dashed border-white/10 rounded-2xl p-6 space-y-4">
-          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">⚙️ Panel de Simulación (Sanova Admin)</p>
-          <div className="grid grid-cols-3 gap-2">
-            <button onClick={simularPagoDetectado} className="py-2.5 px-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 text-[10px] font-bold rounded-xl border border-blue-500/20 transition-all">1. Detectar</button>
-            <button onClick={simularPagoExitoso} disabled={status !== 'DETECTED'} className={`py-2.5 px-2 text-[10px] font-bold rounded-xl border transition-all ${status === 'DETECTED' ? 'bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border-emerald-500/20' : 'bg-white/5 text-gray-600 border-transparent cursor-not-allowed'}`}>2. Confirmar</button>
-            <button onClick={reiniciarSimulador} className="py-2.5 px-2 bg-white/5 hover:bg-white/10 text-gray-400 text-[10px] font-bold rounded-xl border border-white/5 transition-all">Reiniciar</button>
-          </div>
+          )}
         </div>
       )}
-
     </div>
   );
 }
